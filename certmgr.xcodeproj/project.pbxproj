@@ -1,0 +1,415 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECCC31892C46BCF900DC22BB /* certmgrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCC31882C46BCF900DC22BB /* certmgrApp.swift */; };
+		ECCC318B2C46BCF900DC22BB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCC318A2C46BCF900DC22BB /* ContentView.swift */; };
+		ECCC318D2C46BD0000DC22BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECCC318C2C46BD0000DC22BB /* Assets.xcassets */; };
+		ECCC31902C46BD0000DC22BB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ECCC318F2C46BD0000DC22BB /* Preview Assets.xcassets */; };
+		ECCC31922C46BD0000DC22BB /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCC31912C46BD0000DC22BB /* Persistence.swift */; };
+		ECCC31952C46BD0100DC22BB /* certmgr.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = ECCC31932C46BD0100DC22BB /* certmgr.xcdatamodeld */; };
+		ECCC319D2C46BDBB00DC22BB /* certmgr.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCC319C2C46BDBB00DC22BB /* certmgr.swift */; };
+		ECCC31A22C46BF3400DC22BB /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = ECCC31A12C46BF3400DC22BB /* OpenSSL.xcframework */; };
+		ECCC31A32C46BF3400DC22BB /* OpenSSL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ECCC31A12C46BF3400DC22BB /* OpenSSL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		ECCC31A62C484F0200DC22BB /* identmgr.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCC31A52C484F0200DC22BB /* identmgr.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		ECCC31A42C46BF3400DC22BB /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				ECCC31A32C46BF3400DC22BB /* OpenSSL.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		ECCC31852C46BCF900DC22BB /* certmgr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = certmgr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECCC31882C46BCF900DC22BB /* certmgrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = certmgrApp.swift; sourceTree = "<group>"; };
+		ECCC318A2C46BCF900DC22BB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		ECCC318C2C46BD0000DC22BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ECCC318F2C46BD0000DC22BB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		ECCC31912C46BD0000DC22BB /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		ECCC31942C46BD0100DC22BB /* certmgr.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = certmgr.xcdatamodel; sourceTree = "<group>"; };
+		ECCC31962C46BD0100DC22BB /* certmgr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = certmgr.entitlements; sourceTree = "<group>"; };
+		ECCC319C2C46BDBB00DC22BB /* certmgr.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = certmgr.swift; sourceTree = "<group>"; };
+		ECCC31A12C46BF3400DC22BB /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = OpenSSL/Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
+		ECCC31A52C484F0200DC22BB /* identmgr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = identmgr.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ECCC31822C46BCF900DC22BB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECCC31A22C46BF3400DC22BB /* OpenSSL.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ECCC317C2C46BCF900DC22BB = {
+			isa = PBXGroup;
+			children = (
+				ECCC31872C46BCF900DC22BB /* certmgr */,
+				ECCC31862C46BCF900DC22BB /* Products */,
+				ECCC319E2C46BE7C00DC22BB /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		ECCC31862C46BCF900DC22BB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ECCC31852C46BCF900DC22BB /* certmgr.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECCC31872C46BCF900DC22BB /* certmgr */ = {
+			isa = PBXGroup;
+			children = (
+				ECCC319C2C46BDBB00DC22BB /* certmgr.swift */,
+				ECCC31882C46BCF900DC22BB /* certmgrApp.swift */,
+				ECCC318A2C46BCF900DC22BB /* ContentView.swift */,
+				ECCC318C2C46BD0000DC22BB /* Assets.xcassets */,
+				ECCC31912C46BD0000DC22BB /* Persistence.swift */,
+				ECCC31962C46BD0100DC22BB /* certmgr.entitlements */,
+				ECCC31932C46BD0100DC22BB /* certmgr.xcdatamodeld */,
+				ECCC318E2C46BD0000DC22BB /* Preview Content */,
+				ECCC31A52C484F0200DC22BB /* identmgr.swift */,
+			);
+			path = certmgr;
+			sourceTree = "<group>";
+		};
+		ECCC318E2C46BD0000DC22BB /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				ECCC318F2C46BD0000DC22BB /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		ECCC319E2C46BE7C00DC22BB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ECCC31A12C46BF3400DC22BB /* OpenSSL.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ECCC31842C46BCF900DC22BB /* certmgr */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECCC31992C46BD0100DC22BB /* Build configuration list for PBXNativeTarget "certmgr" */;
+			buildPhases = (
+				ECCC31812C46BCF900DC22BB /* Sources */,
+				ECCC31822C46BCF900DC22BB /* Frameworks */,
+				ECCC31832C46BCF900DC22BB /* Resources */,
+				ECCC31A42C46BF3400DC22BB /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = certmgr;
+			productName = certmgr;
+			productReference = ECCC31852C46BCF900DC22BB /* certmgr.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ECCC317D2C46BCF900DC22BB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					ECCC31842C46BCF900DC22BB = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = ECCC31802C46BCF900DC22BB /* Build configuration list for PBXProject "certmgr" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = ECCC317C2C46BCF900DC22BB;
+			productRefGroup = ECCC31862C46BCF900DC22BB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ECCC31842C46BCF900DC22BB /* certmgr */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ECCC31832C46BCF900DC22BB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECCC31902C46BD0000DC22BB /* Preview Assets.xcassets in Resources */,
+				ECCC318D2C46BD0000DC22BB /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ECCC31812C46BCF900DC22BB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECCC319D2C46BDBB00DC22BB /* certmgr.swift in Sources */,
+				ECCC31952C46BD0100DC22BB /* certmgr.xcdatamodeld in Sources */,
+				ECCC31922C46BD0000DC22BB /* Persistence.swift in Sources */,
+				ECCC318B2C46BCF900DC22BB /* ContentView.swift in Sources */,
+				ECCC31892C46BCF900DC22BB /* certmgrApp.swift in Sources */,
+				ECCC31A62C484F0200DC22BB /* identmgr.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		ECCC31972C46BD0100DC22BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		ECCC31982C46BD0100DC22BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "macosx iphonesimulator iphoneos";
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		ECCC319A2C46BD0100DC22BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = certmgr/certmgr.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"certmgr/Preview Content\"";
+				DEVELOPMENT_TEAM = 3BHWWFU2JV;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Invisinet.certmgr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		ECCC319B2C46BD0100DC22BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = certmgr/certmgr.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"certmgr/Preview Content\"";
+				DEVELOPMENT_TEAM = 3BHWWFU2JV;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Invisinet.certmgr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ECCC31802C46BCF900DC22BB /* Build configuration list for PBXProject "certmgr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECCC31972C46BD0100DC22BB /* Debug */,
+				ECCC31982C46BD0100DC22BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECCC31992C46BD0100DC22BB /* Build configuration list for PBXNativeTarget "certmgr" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECCC319A2C46BD0100DC22BB /* Debug */,
+				ECCC319B2C46BD0100DC22BB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		ECCC31932C46BD0100DC22BB /* certmgr.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				ECCC31942C46BD0100DC22BB /* certmgr.xcdatamodel */,
+			);
+			currentVersion = ECCC31942C46BD0100DC22BB /* certmgr.xcdatamodel */;
+			path = certmgr.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = ECCC317D2C46BCF900DC22BB /* Project object */;
+}
