@@ -3,6 +3,30 @@ import Foundation
 import Security
 import OpenSSL
 
+func getItemsInAccessGroup(accessGroup: String) -> [Dictionary<String, Any>] {
+	var items: [Dictionary<String, Any>] = []
+	
+	let query = [
+		kSecClass: kSecClassGenericPassword,
+		kSecAttrAccessGroup: accessGroup,
+		kSecMatchLimit: kSecMatchLimitAll,
+		kSecReturnAttributes: true,
+		kSecReturnData: false,
+		kSecUseDataProtectionKeychain: true
+	] as NSDictionary
+	
+	var result: AnyObject?
+	let status = SecItemCopyMatching(query, &result)
+	
+	if status == errSecSuccess, let itemInfoList = result as? [[String: Any]] {
+		items.append(contentsOf: itemInfoList)
+	} else {
+		print("\(#function): \(#line), Error: Could not get keychain items, status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
+	}
+	
+	return items
+}
+
 func createPKCS12Data(certificate: SecCertificate, key: SecKey, p12Name: String, p12Password: String) -> (data: Data?, error: Error?) {
 	// Convert SecCertificate and SecKey to DER-encoded Data
 	let certificateData = SecCertificateCopyData(certificate)
@@ -100,34 +124,57 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 		return errSecParam
 	}
 
-	var importResult: CFArray? = nil
-	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase as String: ""] as CFDictionary, &importResult)
+	var items: CFArray?
+	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase as String: ""] as CFDictionary, &items)
 	if status != errSecSuccess {
 		print("\(#function): \(#line), SecPKCS12Import failed, status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
 		return status
 	}
 
-	var items = [String: Any]()
-	items[kSecClass as String] = kSecClassIdentity
-	items[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
-	items[kSecImportExportPassphrase as String] = kCFNull // Optional passphrase (or your CFString passphrase)
-	items[kSecValueRef as String] = importResult
-	items[kSecUseDataProtectionKeychain as String] = true
+	let dics = items! as! Array<Dictionary<String, Any>>
+	let firstItem = dics[0]
 	
-	let stat = SecItemAdd(items as CFDictionary, nil)
+	let identity = firstItem[kSecImportItemIdentity as String] as! SecIdentity?
+
+	var privateKey: SecKey?
+	let statusKey = SecIdentityCopyPrivateKey(identity!, &privateKey)
+	guard statusKey == errSecSuccess else {
+		return statusKey
+	}
+	var certificate: SecCertificate?
+	let statuscert = SecIdentityCopyCertificate(identity!, &certificate)
+	guard statuscert == errSecSuccess else {
+		return statuscert
+	}
+
+	dumpCertFromSecCertificate(cert: certificate!)
+	
+	let attrs = [
+		kSecClass: kSecClassIdentity,
+//		kSecAttrApplicationTag: tag.data(using: .utf8)!,
+//		kSecAttrApplicationLabel: tag.data(using: .utf8)!,
+		kSecAttrLabel: tag.data(using: .utf8)!,
+//		kSecAttrLabel: tag,
+//		kSecImportExportPassphrase: kCFNull!, // Optional passphrase (or your CFString passphrase)
+		kSecValueRef: identity!,
+		kSecUseDataProtectionKeychain: true
+	] as NSDictionary
+	
+	let stat = SecItemAdd(attrs, nil)
 	
 	if stat != errSecSuccess {
-		print("\(#function): \(#line), SecItemAdd of identity failed, status: \(stat) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
+		print("\(#function): \(#line), SecItemAdd of identity failed, status: \(stat) \(SecCopyErrorMessageString(stat, nil) as String? ?? "Unknown error")")
 		return stat
 	}
-	
-	return stat
+
+	return errSecSuccess
 }
 
 func findIdentity(forKeyTag tag: String) -> SecIdentity? {
 	var query = [String: Any]()
 	query[kSecClass as String] = kSecClassIdentity
-	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
+	query[kSecAttrLabel as String] = tag.data(using: .utf8)
+//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
 	query[kSecReturnRef as String] = kCFBooleanTrue!
 	query[kSecUseDataProtectionKeychain as String] = true
 	
@@ -146,8 +193,9 @@ func findIdentity(forKeyTag tag: String) -> SecIdentity? {
 func deleteIdentity(forKeyTag tag: String) -> OSStatus {
   var query = [String: Any]()
   query[kSecClass as String] = kSecClassIdentity
-  query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
-  
+	query[kSecAttrLabel as String] = tag.data(using: .utf8)
+//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
+
   let status = SecItemDelete(query as CFDictionary)
   return status
 }

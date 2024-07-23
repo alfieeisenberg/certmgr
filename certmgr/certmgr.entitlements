@@ -8,7 +8,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)Invisinet.certmgr</string>
+		<string>Invisinet.certmgr.keychainaccessgroup</string>
 	</array>
 </dict>
 </plist>

@@ -45,6 +45,8 @@ struct ContentView: View {
             newItem.timestamp = Date()
 
             do {
+
+				getItemsInAccessGroup(accessGroup: "Invisinet.certmgr.keychainaccessgroup")
 				addIdentityToKeychain(certificatePEM: pemCertificate, privateKeyPEM: pemKey, tag: "MyIdentity")
 				findIdentity(forKeyTag: "MyIdentity")
 				deleteIdentity(forKeyTag: "MyIdentity")
