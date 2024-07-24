@@ -123,7 +123,7 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 		return errSecParam
 	}
 
-	let (pkcs12Data, err) = createPKCS12Data(certificate: secCertificate, key: secKey, p12Name: "p12Name", p12Password: "")
+	let (pkcs12Data, err) = createPKCS12Data(certificate: secCertificate, key: secKey, p12Name: "p12Name", p12Password: "p12pass")
 	
 	guard let pkcs12Data = pkcs12Data else {
 		return errSecParam
@@ -137,7 +137,7 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 	}
 	
 	var items: CFArray?
-	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase:  ""] as NSDictionary, &items)
+	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase:  "p12pass"] as NSDictionary, &items)
 	if status != errSecSuccess {
 		print("\(#function): \(#line), SecPKCS12Import failed, status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
 		return status
