@@ -26,6 +26,11 @@ func getItemsInAccessGroup(accessGroup: String) -> [Dictionary<String, Any>] {
 	
 	return items
 }
+func writeDataToFilePath(data: Data, filePath: String) throws {
+	let fileURL = URL(fileURLWithPath: filePath)
+	try data.write(to: fileURL)
+}
+
 
 func createPKCS12Data(certificate: SecCertificate, key: SecKey, p12Name: String, p12Password: String) -> (data: Data?, error: Error?) {
 	// Convert SecCertificate and SecKey to DER-encoded Data
@@ -124,8 +129,15 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 		return errSecParam
 	}
 
+	do {
+		try writeDataToFilePath(data: pkcs12Data, filePath: "/Users/alfred_eisenberg/Downloads/pkcs12.p12")
+	}
+	catch {
+		print("Error writing data to file: \(error)")
+	}
+	
 	var items: CFArray?
-	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase as String: ""] as CFDictionary, &items)
+	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase:  ""] as NSDictionary, &items)
 	if status != errSecSuccess {
 		print("\(#function): \(#line), SecPKCS12Import failed, status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
 		return status
@@ -147,7 +159,7 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 		return statuscert
 	}
 
-	dumpCertFromSecCertificate(cert: certificate!)
+//	dumpCertFromSecCertificate(cert: certificate!)
 	
 	let attrs = [
 		kSecClass: kSecClassIdentity,
@@ -191,11 +203,16 @@ func findIdentity(forKeyTag tag: String) -> SecIdentity? {
 }
 
 func deleteIdentity(forKeyTag tag: String) -> OSStatus {
-  var query = [String: Any]()
-  query[kSecClass as String] = kSecClassIdentity
+	var query = [String: Any]()
+	query[kSecClass as String] = kSecClassIdentity
 	query[kSecAttrLabel as String] = tag.data(using: .utf8)
-//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
-
-  let status = SecItemDelete(query as CFDictionary)
-  return status
+	//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
+	
+	let status = SecItemDelete(query as CFDictionary)
+	if status != errSecSuccess {
+		// Handle error (e.g., no item found)
+		print("\(#function): \(#line), Can't delete identity with tag: \(tag), status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
+	}
+	
+	return status
 }
