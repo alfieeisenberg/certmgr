@@ -3,6 +3,131 @@ import Foundation
 import Security
 import OpenSSL
 
+func getSecKeyAndSecCertFromIdentity(_ identity: SecIdentity) -> (SecKey?, SecCertificate?) {
+	var key: SecKey?
+	let keyStatus = SecIdentityCopyPrivateKey(identity, &key)
+	guard keyStatus == errSecSuccess else {
+		print("Error extracting key: \(keyStatus)")
+		return (nil, nil)
+	}
+
+	var certificate: SecCertificate?
+	let certStatus = SecIdentityCopyCertificate(identity, &certificate)
+	guard certStatus == errSecSuccess else {
+		print("Error extracting certificate: \(certStatus)")
+		return (key, nil) // Return the extracted key even if certificate extraction fails
+	}
+
+	return (key, certificate)
+}
+
+func separateKeysAndCertificates(from dict: CFDictionary) -> ([SecKey], [SecCertificate]) {
+	var keys: [SecKey] = []
+	var certificates: [SecCertificate] = []
+
+	var identities: [SecIdentity] = []
+
+	let swiftDict = dict as NSDictionary as! [AnyHashable: Any]
+
+	for (key, value) in swiftDict {
+//		if let key = key as? CFIndex, let identity = value as? SecIdentity {
+//			identities.append(identity)
+//		}
+	}
+	for identity in identities {
+		var key: SecKey?
+		let keyStatus = SecIdentityCopyPrivateKey(identity, &key)
+		if let key = key, keyStatus == errSecSuccess {
+			keys.append(key)
+		} else {
+			print("Error extracting key: \(keyStatus)")
+		}
+
+		var certificate: SecCertificate?
+		let certStatus = SecIdentityCopyCertificate(identity, &certificate)
+		if let certificate = certificate, certStatus == errSecSuccess {
+			certificates.append(certificate)
+		} else {
+			print("Error extracting certificate: \(certStatus)")
+		}
+	}
+
+	return (keys, certificates)
+}
+func getAllIdentitiesFromKeychain() -> [SecIdentity]? {
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassIdentity,
+		kSecReturnAttributes as String: true,
+		kSecMatchLimit as String: kSecMatchLimitAll
+	]
+
+	var result: AnyObject?
+	let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+	if let dictionary = result as? NSDictionary {
+		// Handle dictionary
+		print("Dictionary")
+	} else if let array = result as? NSArray {
+		// Handle array
+		print("NSArray")
+	} else {
+		print("Other")
+		// Handle other possibilities
+	}
+	
+	guard let array = result as? NSArray  else {
+		// Handle array
+		print("Error fetching identities, Not NSArray")
+	    return []
+	}
+
+	print("placeholder")
+	
+	return []
+
+}
+
+
+
+func getPEMFromIdentity(_ identity: SecIdentity) -> (keyPEM: String?, certPEM: String?) {
+	var keyRef: SecKey?
+	var certificate: SecCertificate?
+	
+	var keyPEM: String?
+	
+	let status = SecIdentityCopyPrivateKey(identity, &keyRef)
+	if status == errSecSuccess {
+		let keyData = SecKeyCopyExternalRepresentation(keyRef!, nil) as CFData?
+		let swiftKeyData = Data(bytes: CFDataGetBytePtr(keyData), count: CFDataGetLength(keyData))
+		let keyBase64String = swiftKeyData.base64EncodedString()
+		keyPEM = """
+		-----BEGIN PRIVATE KEY-----
+		\(keyBase64String)
+		-----END PRIVATE KEY-----
+		"""
+	} else {
+		print("Error extracting key: \(status)")
+	}
+	
+	var certPEM: String?
+	
+	let certStatus = SecIdentityCopyCertificate(identity, &certificate)
+	if certStatus == errSecSuccess {
+		let certData = SecCertificateCopyData(certificate!)
+		let swiftCertData = Data(bytes: CFDataGetBytePtr(certData), count: CFDataGetLength(certData))
+		let certBase64String = swiftCertData.base64EncodedString()
+		certPEM = """
+		-----BEGIN CERTIFICATE-----
+		\(certBase64String)
+		-----END CERTIFICATE-----
+		"""
+	} else {
+		print("Error extracting certificate: \(certStatus)")
+	}
+	
+	return (keyPEM, certPEM)
+}
+
 func getItemsInAccessGroup(accessGroup: String) -> [Dictionary<String, Any>] {
 	var items: [Dictionary<String, Any>] = []
 	
@@ -26,6 +151,81 @@ func getItemsInAccessGroup(accessGroup: String) -> [Dictionary<String, Any>] {
 	
 	return items
 }
+
+func getIdentitiesForKey(key: SecKey) -> [SecIdentity]? {
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassIdentity,
+		kSecMatchLimit as String: kSecMatchLimitAll,
+		kSecUseDataProtectionKeychain as String: true
+	]
+	
+	var identities: CFTypeRef?
+	let identitiesPtr = withUnsafeMutablePointer(to: &identities) {
+		$0
+	}
+	
+	let status = SecItemCopyMatching(query as CFDictionary, identitiesPtr)
+	guard status == errSecSuccess else {
+		// Handle error
+		return nil
+	}
+	
+	// Handle the CFTypeRef, which might be a CFArray
+	if CFGetTypeID(identities) == CFArrayGetTypeID() {
+		let identitiesArray = identities as! CFArray
+		// Convert CFArray to Swift array of SecCertificate
+		let swiftIdentities = identitiesArray as! [SecIdentity]
+		// Process the swiftCertificates array
+	    // Only return identites that match the key
+		
+		var retIdentites : [SecIdentity] = []
+		
+		swiftIdentities.forEach { identity in
+			var privateKey: SecKey?
+			let statusKey = SecIdentityCopyPrivateKey(identity, &privateKey) 
+			if statusKey == errSecSuccess {
+				var certificate: SecCertificate?
+				let statusCert = SecIdentityCopyCertificate(identity, &certificate)
+				if statusCert == errSecSuccess {
+					// add identity to return array
+					retIdentites.append(identity)
+				}
+			}
+		}
+
+		return retIdentites
+	}
+	return nil
+}
+
+func getCertificatesForKey(key: SecKey) -> [SecCertificate]? {
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassCertificate,
+		kSecMatchLimit as String: kSecMatchLimitAll
+	]
+	
+	var certificates: CFTypeRef?
+	let certificatesPtr = withUnsafeMutablePointer(to: &certificates) {
+		$0
+	}
+	
+	let status = SecItemCopyMatching(query as CFDictionary, certificatesPtr)
+	guard status == errSecSuccess else {
+		// Handle error
+		return nil
+	}
+	
+	// Handle the CFTypeRef, which might be a CFArray
+	if CFGetTypeID(certificates) == CFArrayGetTypeID() {
+		let certificatesArray = certificates as! CFArray
+		// Convert CFArray to Swift array of SecCertificate
+		let swiftCertificates = certificatesArray as! [SecCertificate]
+		// Process the swiftCertificates array
+		return swiftCertificates
+	}
+	return nil
+}
+
 func writeDataToFilePath(data: Data, filePath: String) throws {
 	let fileURL = URL(fileURLWithPath: filePath)
 	try data.write(to: fileURL)
@@ -105,28 +305,28 @@ func dumpCertFromSecCertificate(cert: SecCertificate) {
 	}
 }
 
-func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: String) -> OSStatus {
+func createIdentity(certificatePEM: String, privateKeyPEM: String, tag: String) -> (SecCertificate?, SecKey?, SecIdentity?, OSStatus) {
 	guard let certificateData = certificatePEM.data(using: .utf8) else {
 		print("Error converting certificate PEM to data")
-		return errSecParam
+		return (nil, nil, nil, errSecParam)
 	}
 	guard let privateKeyData = privateKeyPEM.data(using: .utf8) else {
 		print("Error converting private key PEM to data")
-		return errSecParam
+		return (nil, nil, nil, errSecParam)
 	}
 	guard let secCertificate = convertPEMToSecCertificate(certificatePEM) else {
 		print("Error converting PEM TO SecCertificate")
-		return errSecParam
+		return (nil, nil, nil, errSecParam)
 	}
 	guard let secKey = convertPEMToSecKey(privateKeyPEM) else {
 		print("Error converting PEM TO SecKey")
-		return errSecParam
+		return (secCertificate, nil, nil, errSecParam)
 	}
 
 	let (pkcs12Data, err) = createPKCS12Data(certificate: secCertificate, key: secKey, p12Name: "p12Name", p12Password: "p12pass")
 	
 	guard let pkcs12Data = pkcs12Data else {
-		return errSecParam
+		return (secCertificate, secKey, nil, errSecParam)
 	}
 
 	do {
@@ -140,14 +340,14 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 	let status = SecPKCS12Import(pkcs12Data as NSData, [kSecImportExportPassphrase:  "p12pass"] as NSDictionary, &items)
 	if status != errSecSuccess {
 		print("\(#function): \(#line), SecPKCS12Import failed, status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
-		return status
+		return (secCertificate, secKey, nil, status)
 	}
 
 	let dics = items! as! Array<Dictionary<String, Any>>
 	let firstItem = dics[0]
 	
 	let identity = firstItem[kSecImportItemIdentity as String] as! SecIdentity?
-
+#if false
 	var privateKey: SecKey?
 	let statusKey = SecIdentityCopyPrivateKey(identity!, &privateKey)
 	guard statusKey == errSecSuccess else {
@@ -163,10 +363,9 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 	
 	let attrs = [
 		kSecClass: kSecClassIdentity,
+		kSecAttrLabel: tag.data(using: .utf8)!,
 //		kSecAttrApplicationTag: tag.data(using: .utf8)!,
 //		kSecAttrApplicationLabel: tag.data(using: .utf8)!,
-		kSecAttrLabel: tag.data(using: .utf8)!,
-//		kSecAttrLabel: tag,
 //		kSecImportExportPassphrase: kCFNull!, // Optional passphrase (or your CFString passphrase)
 		kSecValueRef: identity!,
 		kSecUseDataProtectionKeychain: true
@@ -179,21 +378,30 @@ func addIdentityToKeychain(certificatePEM: String, privateKeyPEM: String, tag: S
 		return stat
 	}
 
-	return errSecSuccess
+	print("\(#function): \(#line), SecItemAdd of identity Succeeded")
+#endif
+	dumpCertFromSecCertificate(cert: secCertificate)
+	return (secCertificate, secKey, identity, errSecSuccess)
 }
 
+// This is no good as you can't add a tag to an identity that makes up identity uniqueness.
+// the only tag that is part of uniqueness is kSecAttrApplicationTag
+// kSecAttrLabel works fine on iOS for finding and deleting but find doesn't seem to work on macOS.
 func findIdentity(forKeyTag tag: String) -> SecIdentity? {
-	var query = [String: Any]()
-	query[kSecClass as String] = kSecClassIdentity
-	query[kSecAttrLabel as String] = tag.data(using: .utf8)
-//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
-	query[kSecReturnRef as String] = kCFBooleanTrue!
-	query[kSecUseDataProtectionKeychain as String] = true
+	var query = [
+		kSecClass: kSecClassIdentity,
+		kSecAttrLabel: tag.data(using: .utf8)!,
+//	kSecAttrApplicationLabel: tag.data(using: .utf8),
+//	kSecAttrApplicationTag: = tag.data(using: .utf8),
+		kSecReturnRef : kCFBooleanTrue!,
+		kSecUseDataProtectionKeychain: true
+	] as NSDictionary
 	
 	var result: AnyObject?
 	let status = SecItemCopyMatching(query as CFDictionary, &result)
 	
 	if status == errSecSuccess, let item = result {
+		print("\(#function): \(#line),  Find identity Succeeded")
 		return item as! SecIdentity // Forced cast (use with caution)
 	} else {
 		// Handle error (e.g., no item found)
@@ -203,10 +411,13 @@ func findIdentity(forKeyTag tag: String) -> SecIdentity? {
 }
 
 func deleteIdentity(forKeyTag tag: String) -> OSStatus {
-	var query = [String: Any]()
-	query[kSecClass as String] = kSecClassIdentity
-	query[kSecAttrLabel as String] = tag.data(using: .utf8)
-	//	query[kSecAttrApplicationTag as String] = tag.data(using: .utf8)
+	var query = [
+		kSecClass: kSecClassIdentity,
+		kSecAttrLabel: tag.data(using: .utf8)!,
+//		kSecAttrApplicationLabel: tag.data(using: .utf8),
+//		kSecAttrApplicationTag: tag.data(using: .utf8),
+		kSecUseDataProtectionKeychain: true
+	] as NSDictionary
 	
 	let status = SecItemDelete(query as CFDictionary)
 	if status != errSecSuccess {
@@ -214,5 +425,6 @@ func deleteIdentity(forKeyTag tag: String) -> OSStatus {
 		print("\(#function): \(#line), Can't delete identity with tag: \(tag), status: \(status) \(SecCopyErrorMessageString(status, nil) as String? ?? "Unknown error")")
 	}
 	
+	print("\(#function): \(#line),  Delete identity Succeeded")
 	return status
 }

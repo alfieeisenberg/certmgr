@@ -44,16 +44,23 @@ struct ContentView: View {
             let newItem = Item(context: viewContext)
             newItem.timestamp = Date()
 
-            do {
-
-				getItemsInAccessGroup(accessGroup: "Invisinet.certmgr.keychainaccessgroup")
-				addIdentityToKeychain(certificatePEM: pemCertificate, privateKeyPEM: pemKey, tag: "MyIdentity")
-				findIdentity(forKeyTag: "MyIdentity")
-				deleteIdentity(forKeyTag: "MyIdentity")
+			do {
+				let identities = getAllIdentitiesFromKeychain()
+//				var secCert: SecCertificate?
+//				var secKey: SecKey?
+//				var secIdentity: SecIdentity?
+//				var osStatus: OSStatus?
+////				getItemsInAccessGroup(accessGroup: "Invisinet.certmgr.keychainaccessgroup")
+//				deleteKey()
+//				deleteKey()
+//				(secCert, secKey, secIdentity, osStatus) = createIdentity(certificatePEM: pemCertificate, privateKeyPEM: pemKey, tag: "MyIdentity")
+//				deleteKey()
+//				findIdentity(forKeyTag: "MyIdentity")
+//				deleteIdentity(forKeyTag: "MyIdentity")
 //				findCert()
 //				deleteCert()
 //				findKey()
-//				deleteKey()
+//				addSecKeyToKeychain(secKey: secKey!)
 //				addKey()
 //				addCert()
 

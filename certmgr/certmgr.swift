@@ -13,59 +13,59 @@ import OpenSSL
 
 let pemCertificate = """
 -----BEGIN CERTIFICATE-----
-MIIEAjCCAuqgAwIBAgIQZwBinnGe0eANbPsdiAW1ZDANBgkqhkiG9w0BAQsFADBM
+MIIECDCCAvCgAwIBAgIQZwBinnGe0eANbPsdiAW1ZTANBgkqhkiG9w0BAQsFADBM
 MQswCQYDVQQGEwJVUzEMMAoGA1UECgwDUFlBMS8wLQYDVQQDDCZCbHVlQXJtb3It
-UG9ydGFibGUgU3ViIENBIHY0LjAgZm9yIFRBQzAeFw0yNDA3MjMxNzAxMjNaFw0y
-NTA3MjMxNzAxMjNaMFkxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOSDESMBAGA1UE
-CgwJSW52aXNpbmV0MQwwCgYDVQQLDANlcGMxGzAZBgNVBAMMEmFsZjIuaW52aXNp
-bmV0LmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALauVYHdKy6N
-misY3qTCp3EDa+fOYhsqzkAC6qYkkqn+A122It71Lq0BuiA/9S9DiTkRO8Ll2co4
-ffAKRkvI6QjoOgIQZIdgbW/V51UTG5vkXjoso+kEjUefy9Z6Y2du0Pxz/mWNZMQT
-5decTTh5Bp4qpRqv/n2TWOTwuuZmcIaJO/R0lR64mV2rVwFEeQc6N6wfIlXGjyzu
-ULD85ntCRrq1pwqjFKSiUgP+3VKD/vBUuF42Yd3bzX6VMIV+xB97ai2lUO3hV1jy
-85IpJ5l6l6yyvq6V+FF+L+sDKbzrhr7G77OHReG9eBXRqhexRGGvwmtCLzXhBA3N
-D26KkK/uzDsCAwEAAaOB0jCBzzAJBgNVHRMEAjAAMAsGA1UdDwQEAwIFoDAdBgNV
-HSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwVgYDVR0RBE8wTYISYWxmMi5pbnZp
-c2luZXQuY29thjdibHVlYXJtb3I6Ly9hbGYyLmludmlzaW5ldC5jb20vQWdlbnQv
-aWRlbnRpdHlBY3RpdmF0aW9uMB0GA1UdDgQWBBQgiWm6TJYU9KQH7sob4mm65jUS
-pzAfBgNVHSMEGDAWgBSJWYXB8Kj3AXsnSvieggSaDrdyOzANBgkqhkiG9w0BAQsF
-AAOCAQEAYh1yr1jy4It+OTxMjGNeYcEFysgeBKOUwknPW+X5/foPhDHLDLo5aZe0
-db1giGQMSmcYxwYgl7MqRiNJqdAIuXSHP1oN1h6nSOZm8a9XbZS1zCUbHRIEFLGr
-yH4jAoHd+Zf6FAW1qAL1hzzgvmmxscUr/SamScJFyOdwiUobowVBqgW5DPrUgbt2
-d4CQBIYxpjDPluctKQuhW3ZQXB4RcANedsiBQcftITf4l2mMxLTdA2nJQIvolHHt
-r6ZCzIgNOeJon8WKevXe4u8zhnHOC0SyKAnjOfaT53oyTBd9CkHnhoyPgvRMMxoS
-a9Hj/PzNXpxzSsaw6bBg+fib3iSkwg==
+UG9ydGFibGUgU3ViIENBIHY0LjAgZm9yIFRBQzAeFw0yNDA3MjQxOTE5MTVaFw0y
+NTA3MjQxOTE5MTVaMFsxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOSDESMBAGA1UE
+CgwJSW52aXNpbmV0MQwwCgYDVQQLDANlcGMxHTAbBgNVBAMMFGFsZnJlZC5pbnZp
+c2luZXQuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtwtXVj87
+fgV2tOe4VB8UCPi4LA2H052b6jaWAYaB/moh8G2+bb1VSGwWzpOufjUfPlxuSQ9V
+ksYMiLah+LMcM3JhUOS85XhrufgNyw/BPncxtUbVmbjRNF9DaORlhuZ6A6aHr6Ea
+E2Ml+gTW2C4ZV6hL3Blb02WLZbWY610Yw+G6KzZLMdQtNxnbkLifuwAZ6wXn4Xns
+5VczpSwb3E6wCygypQXjEW1+uaCACSM9KKmQysIIlhjJJqocgPxXUw1wmPPnVuB4
+DOMTvmoIYdbVmc8ro5HBxziBluc6Z12FCbDPC6VoK6OCFnxOd5sl5NOlcPfyo7Ao
+ZdqimM1zQ1ikywIDAQABo4HWMIHTMAkGA1UdEwQCMAAwCwYDVR0PBAQDAgWgMB0G
+A1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjBaBgNVHREEUzBRghRhbGZyZWQu
+aW52aXNpbmV0LmNvbYY5Ymx1ZWFybW9yOi8vYWxmcmVkLmludmlzaW5ldC5jb20v
+QWdlbnQvaWRlbnRpdHlBY3RpdmF0aW9uMB0GA1UdDgQWBBTA+W21KmElZJXJnDcg
+ESkE5inQ3TAfBgNVHSMEGDAWgBSJWYXB8Kj3AXsnSvieggSaDrdyOzANBgkqhkiG
+9w0BAQsFAAOCAQEAVHfpTPAe9qfLUWnCcrF5Ns5V5BfdH7f8n15KFcdGaChMCVGe
+U6/a2Q3M6IWYHiJJJIe0HLUcWeg0vKlnmHG9hw0D1QtQ3DsznG8UNpuFguqN86WL
++p704Iw4xv8uTMW1yPt3cMnWy12dv6NCQ8bAOWpFPZwK8bUY0bSgxzG683KvEE6I
+6R0RCP7ElvhkPM6xQt1JghPJ0hxKEWhPtVbcCHRvplJvA3WvuD19C9yeWFGPSwM7
+5HCNb6yjx+O7AVZjawvOvcEhysBZiW/i/Dzcoxk6tq6HnvRYLUYqdaFGTbujYly7
+ypaRp7Orpd2b1sa3ugVnEpRADrbtn2GzPBTd4Q==
 -----END CERTIFICATE-----
 """
 
 let pemKey = """
 -----BEGIN PRIVATE KEY-----
-MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC2rlWB3SsujZor
-GN6kwqdxA2vnzmIbKs5AAuqmJJKp/gNdtiLe9S6tAbogP/UvQ4k5ETvC5dnKOH3w
-CkZLyOkI6DoCEGSHYG1v1edVExub5F46LKPpBI1Hn8vWemNnbtD8c/5ljWTEE+XX
-nE04eQaeKqUar/59k1jk8LrmZnCGiTv0dJUeuJldq1cBRHkHOjesHyJVxo8s7lCw
-/OZ7Qka6tacKoxSkolID/t1Sg/7wVLheNmHd281+lTCFfsQfe2otpVDt4VdY8vOS
-KSeZepessr6ulfhRfi/rAym864a+xu+zh0XhvXgV0aoXsURhr8JrQi814QQNzQ9u
-ipCv7sw7AgMBAAECggEACEBBoo0cl8yFZXkI6/8n2CUQXI+rgwlkhjItTjmlb0yx
-ZMiN7aX1Nuhvj73jyJxTWEnlsvB1+2S9B3FueGGyaNGGkvugAW2J7LzPLkx1I9Ue
-ORJR3nu6NEuTxbsCogl/sJ2TeeKiLP6SMIeTk02uTnNOh6LFquKpIHoLrwazkIKg
-0iM9fgsuK2swwbYKBXk5XT6fLEPwR5GhhaJrGIo0VF5PDNuVt3nZQL5GisjtrOV2
-dQD5Yo4aZ0cEAPmYxDbNVIU52fHJvtzwtKUNOGWBSyydcKPuypT1cndKG0ldQUwG
-X4iUaqvsDh155V/rGtvV9X+brIeCklqP+eKf7la3VQKBgQDnc0eZek2dP0OROFqq
-odANYd2DSVxYr6f0RrBqssTisb8QQEqdc8D+shD1x1+Bq7i7GwY1Mc7SjHEjzSnZ
-3NYYTfKeIUXyXxUJuOjXtBpiYfaGveYzQzhe0GQsEa1NOOqmNDh6jq+x/oLenXhV
-AkhPYfRdLylHtS2jAyUu8mMgtwKBgQDKDsoV/aQUfURwHtbZyrXjGe/AU3s8o4S8
-0DPKmTgVnaNSHKEIzB/c8XGBQ+ByyidvT1/D5KRD3Ok1+pvdWOK8EsgejKia+kJZ
-n3spjJvCtT/OEfrYMkvKlyrpjfrlvlluLlj9RY/LNau+8foMQ3NaHAH7eCy8d+2j
-x3cAjcYknQKBgQCPL2I8MM2TWnAShyqQJUrw/HptnhTjSMg+9vxtBeuH0y7AfwWq
-ItJivwZ/BrivH+1I048jmYy59OiJnYMmpNhOcOqHqU38g5YgTaS+zU0FUFWTRigD
-zrIw9fsCyGzOOUfxSp0mNN+83hdYYVLwRFk3wwHKJEMFebCiCHAYexuYQQKBgQCa
-k+/kHPPevOqTf/RMD7lQcPIqx3LbNBmDPSCyGL+AQeXFFqPXkBm8NHXqN1xJVQAQ
-NsADpDJKvIEpS3zcPHjQ+ulf/amrTlNeLxTQ94Hd1j1mz/iAVxIGfdlVbcoI4rOW
-CB0KPaJBCuFGJeZuZVelExItKIXI9VK23gzbPprcPQKBgQC6CTcBQBibwdTDoOcb
-u0RVygoT2sNYyGTtipTx0a99rlJkfb+WYAQHgZJe1fQZhXTfJfvn/EUWH/WubAqk
-miUEAQ9z4UrTKIotYtNvshSd2OHHT4KagvTseqS9aEBt5sjo4NTudcDhTAS51DF3
-BWOVG1VzaVofYc4Acs9tqdJ1Cg==
+MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC3C1dWPzt+BXa0
+57hUHxQI+LgsDYfTnZvqNpYBhoH+aiHwbb5tvVVIbBbOk65+NR8+XG5JD1WSxgyI
+tqH4sxwzcmFQ5LzleGu5+A3LD8E+dzG1RtWZuNE0X0No5GWG5noDpoevoRoTYyX6
+BNbYLhlXqEvcGVvTZYtltZjrXRjD4borNksx1C03GduQuJ+7ABnrBefheezlVzOl
+LBvcTrALKDKlBeMRbX65oIAJIz0oqZDKwgiWGMkmqhyA/FdTDXCY8+dW4HgM4xO+
+aghh1tWZzyujkcHHOIGW5zpnXYUJsM8LpWgro4IWfE53myXk06Vw9/KjsChl2qKY
+zXNDWKTLAgMBAAECggEANFI0k72dVsdfCBTYNotvoaTemBECCzYY9BjIRgVZsQxL
+STtFXH7rGrlyx3elQAQVOzEWgSG19y9PM+DoaXthCz+dm47Wg80pFc5Wuv104lMV
+zVhDBB61BgBY92mZr7a/l72JOWWWW4ZSu6WYd9Ctg8XicTZ6bfGvp9IBtP02b/7g
+6/iUnsr8qB5L91bBdZYG5GJR8VnS2L/QJDgVglFqtSCXcGVXVCS9jex77Fueiesb
+59mIJZIdkEQWC5TkhdTD5Nc5gR9+808vb++8/emEDG/66s9S7IjOCWJOWM5jkUIT
+AynGCgbzkSolHfUff7llCQuD5ZBQYu1uG5tMWgxKUQKBgQDhJKGUzJQWKE6a+oYZ
+enwaanZ6cfD9hjNDlTxbzcZiC8otv1KjMDnwgPbmWvgP7TuVfjwF15CkRy9puzCl
+i/s3h4xTvmau33rknrttYoEe/YWe1uVgyENkeUYws6HPd7uvSimndfLQaO/vjKEG
+CNvjU9FEvhgljSPs9wkwcQ4OCQKBgQDQIaHWUEPiDAi7tMj5HxUmGix7sYslbOgK
+2LzSYIOd8r/tIfuSgnu6dj1esAUQfFw7dcY521JomFcfSHRa+gpXcEi6cUhNH2JT
+L5moKYqSqBgWwgLDeRr8wLKMIE+fN8TFYZEOC/nIrP3xWD6xXDxZjSlYSy6RK/fC
+AzYcWQNRMwKBgGYi+xaI9IlUwcw26Mz4LwLA13zW4e/xiKIZOqefI2dpV9AHIpMb
+lr1PlDKOhEidY9F+0fYIg/qyvISnwfroFRBs8rEvCGA+y/6ZMAgAjvkjJBIaBTcx
+wrj692eypi57b+6mo1zv+jan1GmFD6uwKyjm5mHcJxIqBGlE7KtILosZAoGBAK1G
+IrcKsckiXa7v7pVAZFoJVllQUVjCF1jYYjL/OPQpYdGpBglOanWs9KC9CCpWbm7u
+OS53wl7j3TxlFMGdAzkSeOoHX7sdUr2Qlmsi0oQQP6XKtYRJccdVIhB44fDa/A2b
+kajRHY4NP4lK/z6nXHLti6s/RDCGG0lBZS4qiRFzAoGBANLrlST7ixXGVMo1++iB
+7KeMc7q5SotR0S7LshWkeNY9cBpJh+bQIFJ9aVhU1AJS0ubd6c2197E8PZGrdf/U
+0D7V7QE+RoSD6LT8lV9/ntLjei8XndImAltdNfe98y5eXOyLUumCR8sOGV5oKrPa
+KHWzGeQ2mk7h2MnHp62DE5zA
 -----END PRIVATE KEY-----
 """
 
@@ -250,7 +250,7 @@ func deleteCertificateFromKeychain(tag: String) -> Bool {
 	return status == errSecSuccess
 }
 
-func addPrivateKeyToKeychain(privateKey: SecKey, tag: String) -> Bool {
+func addPrivateKeyToKeychain(privateKey: SecKey, tag: String) -> Bool? {
 	let addQuery: [NSString: Any] = [
 		kSecUseDataProtectionKeychain: true,
 		kSecClass: kSecClassKey,
@@ -338,7 +338,6 @@ func findCertificatesFromKey(key: SecKey) -> [SecCertificate]? {
 
 func findIdentity() {
 	let (secIdentity, secCertificate) = findIdentityAndCertificate(forKeyTag: "com.example.mykey")
-
 }
 
 func findIdentityAndCertificate(forKeyTag tag: String) -> (SecIdentity?, SecCertificate?) {
@@ -412,12 +411,15 @@ func deleteCert() {
 	print("\(#function): \(#line), Certificate deleted: \(certificateDeleted)")
 }
 
+func addSecKeyToKeychain(secKey: SecKey) {
+	if let keyAdded = addPrivateKeyToKeychain(privateKey: secKey, tag: "com.example.mykey") {
+		print("\(#function): \(#line), Key added: \(keyAdded)")
+	}
+}
+
 func addKey() {
 	if let privateKey = convertPEMToSecKey(pemKey) {
-		let keyAdded = addPrivateKeyToKeychain(privateKey: privateKey, tag: "com.example.mykey")
-		if keyAdded {
-			print("\(#function): \(#line), Key added: \(keyAdded)")
-		}
+		addSecKeyToKeychain(secKey: privateKey)
 	}
 }
 
@@ -450,8 +452,7 @@ func tryCerts() {
 func tryKeys() {
 	print("===Trying Keys===")
 	if let privateKey = convertPEMToSecKey(pemKey) {
-		let keyAdded = addPrivateKeyToKeychain(privateKey: privateKey, tag: "com.example.mykey")
-		if keyAdded {
+		if let keyAdded = addPrivateKeyToKeychain(privateKey: privateKey, tag: "com.example.mykey") {
 			print("\(#function): \(#line), Key added: \(keyAdded)")
 			if let foundPrivateKey = findPrivateKeyInKeychain(tag: "com.example.mykey") {
 				print("\(#function): \(#line), Private key found: \(foundPrivateKey)")
