@@ -45,7 +45,8 @@ struct ContentView: View {
             newItem.timestamp = Date()
 
 			do {
-				let identities = getAllIdentitiesFromKeychain()
+				let identities = getAllSecIdentitiesFromKeychain()
+				let (keys, certs) = separateSecKeysAndSecCertificates(from: identities)
 //				var secCert: SecCertificate?
 //				var secKey: SecKey?
 //				var secIdentity: SecIdentity?

@@ -21,43 +21,27 @@ func getSecKeyAndSecCertFromIdentity(_ identity: SecIdentity) -> (SecKey?, SecCe
 	return (key, certificate)
 }
 
-func separateKeysAndCertificates(from dict: CFDictionary) -> ([SecKey], [SecCertificate]) {
+func separateSecKeysAndSecCertificates(from identities: [SecIdentity]) -> ([SecKey], [SecCertificate]) {
 	var keys: [SecKey] = []
-	var certificates: [SecCertificate] = []
+	var certs: [SecCertificate] = []
 
-	var identities: [SecIdentity] = []
-
-	let swiftDict = dict as NSDictionary as! [AnyHashable: Any]
-
-	for (key, value) in swiftDict {
-//		if let key = key as? CFIndex, let identity = value as? SecIdentity {
-//			identities.append(identity)
-//		}
-	}
 	for identity in identities {
-		var key: SecKey?
-		let keyStatus = SecIdentityCopyPrivateKey(identity, &key)
-		if let key = key, keyStatus == errSecSuccess {
+		let (key, cert) = getSecKeyAndSecCertFromIdentity(identity)
+		if let key {
 			keys.append(key)
-		} else {
-			print("Error extracting key: \(keyStatus)")
-		}
-
-		var certificate: SecCertificate?
-		let certStatus = SecIdentityCopyCertificate(identity, &certificate)
-		if let certificate = certificate, certStatus == errSecSuccess {
-			certificates.append(certificate)
-		} else {
-			print("Error extracting certificate: \(certStatus)")
+			if let cert {
+				certs.append(cert)
+			}
 		}
 	}
 
-	return (keys, certificates)
+	return (keys, certs)
 }
-func getAllIdentitiesFromKeychain() -> [SecIdentity]? {
+
+func getAllSecIdentitiesFromKeychain() -> [SecIdentity] {
 	let query: [String: Any] = [
 		kSecClass as String: kSecClassIdentity,
-		kSecReturnAttributes as String: true,
+		kSecReturnRef as String: true,
 		kSecMatchLimit as String: kSecMatchLimitAll
 	]
 
@@ -81,13 +65,18 @@ func getAllIdentitiesFromKeychain() -> [SecIdentity]? {
 	    return []
 	}
 
-	print("placeholder")
-	
-	return []
+	return array as! [SecIdentity]
 
 }
 
-
+func getAllKeysFromKeychain() -> [NSDictionary] {
+	
+	return []
+}
+func getAllCertsFromKeychain() -> [NSDictionary] {
+	
+	return []
+}
 
 func getPEMFromIdentity(_ identity: SecIdentity) -> (keyPEM: String?, certPEM: String?) {
 	var keyRef: SecKey?
