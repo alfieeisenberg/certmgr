@@ -45,11 +45,15 @@ struct ContentView: View {
             newItem.timestamp = Date()
 
 			do {
+				let identities = getAllSecIdentitiesFromKeychain()
+				let (keyPEMs, certPEMs) = getPEMsFromIdentities(identities: identities)
+				let (SecKeys, SecCerts)  = separateSecKeysAndSecCertificates(from: identities)
 				let keyAttrs = findKeychainItemsAttributes(ksecClass: kSecClassKey as String, labelMatch: nil, exact: false)
 				let certAttrs = findKeychainItemsAttributes(ksecClass: kSecClassCertificate as String, labelMatch: nil, exact: false)
 				let keyAttrsFiltered = findKeychainItemsAttributes(ksecClass: kSecClassKey as String, labelMatch: "Invisinet", exact: false)
 				let certAttrsFiltered = findKeychainItemsAttributes(ksecClass: kSecClassCertificate as String, labelMatch: "invisinet", exact: false)
-
+				let keyDataFiltered = findKeychainItemsData(ksecClass: kSecClassKey as String, labelMatch: "Invisinet", exact: false)
+				let certDataFiltered = findKeychainItemsData(ksecClass: kSecClassCertificate as String, labelMatch: "invisinet", exact: false)
                 try viewContext.save()
             } catch {
                 // Replace this implementation with code to handle the error appropriately.

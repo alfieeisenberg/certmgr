@@ -3,6 +3,10 @@ import Foundation
 import Security
 import OpenSSL
 
+func dumpCert(cert: OpaquePointer) {
+	X509_print_fp(stderr, cert)
+}
+
 func getSecKeyAndSecCertFromIdentity(_ identity: SecIdentity) -> (SecKey?, SecCertificate?) {
 	var key: SecKey?
 	let keyStatus = SecIdentityCopyPrivateKey(identity, &key)
@@ -69,15 +73,15 @@ func getAllSecIdentitiesFromKeychain() -> [SecIdentity] {
 
 }
 
-func findKeychainItemsData(ksecClass: String, label: String?) -> NSArray {
+func findKeychainItemsData(ksecClass: String, labelMatch: String?, exact: Bool) -> [CFData] {
 	var query: [String: Any] = [
 		kSecClass as String: ksecClass,
 		kSecReturnData as String: true,
 		kSecMatchLimit as String: kSecMatchLimitAll
 	]
 
-	if let label {
-		query[kSecAttrLabel as String] = label
+	if exact, let labelMatch {
+		query[kSecAttrLabel as String] = labelMatch
 	}
 	
 	var result: AnyObject?
@@ -94,13 +98,30 @@ func findKeychainItemsData(ksecClass: String, label: String?) -> NSArray {
 		// Handle other possibilities
 	}
 	
-	guard let array = result as? NSArray  else {
+	guard let cfDataArray = result as? [CFData]  else {
 		// Handle array
 		print("Error fetching keychain items, Not NSArray")
 		return []
 	}
 
-	return array
+	// Convert NSArray to Swift array of [String: Any]
+//	guard let swiftArray = nsArray as? [CFData] else {
+//		print("Conversion failed")
+//		return []
+//	}
+
+// There are no attributes, so this doesn't make sense
+//	if !exact, let labelMatch {
+//		let filteredItems = swiftArray.filter { item in
+//			guard let label = item[kSecAttrLabel as String] as? String else {
+//				return false
+//			}
+//			return label.contains(labelMatch)
+//		}
+//		return filteredItems
+//	}
+	
+	return cfDataArray
 }
 
 
@@ -143,8 +164,7 @@ func findKeychainItemsAttributes(ksecClass: String, labelMatch: String?, exact: 
 	
 	if !exact, let labelMatch {
 		let filteredItems = swiftArray.filter { item in
-			guard /*let itemDict = item,*/
-				  let label = item[kSecAttrLabel as String] as? String else {
+			guard let label = item[kSecAttrLabel as String] as? String else {
 				return false
 			}
 			return label.contains(labelMatch)
@@ -193,43 +213,63 @@ func getAllCertsFromKeychain() -> [NSDictionary] {
 	return []
 }
 
+func certDERtoPEM(derData: Data) -> String? {
+	let base64String = derData.base64EncodedString()
+	let pemHeader = "-----BEGIN CERTIFICATE-----"
+	let pemFooter = "-----END CERTIFICATE-----"
+	return pemHeader + base64String + pemFooter
+}
+
+func keyDERtoPEM(derData: Data) -> String? {
+	let base64String = derData.base64EncodedString()
+	let pemHeader = "-----BEGIN PRIVATE KEY-----"
+	let pemFooter = "-----END PRIVATE KEY-----"
+	return pemHeader + base64String + pemFooter
+}
+
 func getPEMFromIdentity(_ identity: SecIdentity) -> (keyPEM: String?, certPEM: String?) {
-	var keyRef: SecKey?
 	var certificate: SecCertificate?
-	
-	var keyPEM: String?
-	
-	let status = SecIdentityCopyPrivateKey(identity, &keyRef)
-	if status == errSecSuccess {
-		let keyData = SecKeyCopyExternalRepresentation(keyRef!, nil) as CFData?
-		let swiftKeyData = Data(bytes: CFDataGetBytePtr(keyData), count: CFDataGetLength(keyData))
-		let keyBase64String = swiftKeyData.base64EncodedString()
-		keyPEM = """
-		-----BEGIN PRIVATE KEY-----
-		\(keyBase64String)
-		-----END PRIVATE KEY-----
-		"""
-	} else {
-		print("Error extracting key: \(status)")
-	}
-	
 	var certPEM: String?
-	
+
 	let certStatus = SecIdentityCopyCertificate(identity, &certificate)
-	if certStatus == errSecSuccess {
-		let certData = SecCertificateCopyData(certificate!)
-		let swiftCertData = Data(bytes: CFDataGetBytePtr(certData), count: CFDataGetLength(certData))
-		let certBase64String = swiftCertData.base64EncodedString()
-		certPEM = """
-		-----BEGIN CERTIFICATE-----
-		\(certBase64String)
-		-----END CERTIFICATE-----
-		"""
-	} else {
-		print("Error extracting certificate: \(certStatus)")
+	if certStatus == errSecSuccess, let certificate {
+		let certificateData = SecCertificateCopyData(certificate)
+		var certificatePointer = CFDataGetBytePtr(certificateData)
+		let certificateLength = CFDataGetLength(certificateData)
+		guard let certificate = d2i_X509(nil, &certificatePointer, certificateLength) else {
+			print("d2i_X509 failed: Couldn't get certificate")
+			return (nil, nil)
+		}
+		// debugging
+		dumpCert(cert: certificate)
+		print("d2i_X509 success")
+		certPEM = certDERtoPEM(derData: certificateData as Data)
 	}
-	
+
+	var keyRef: SecKey?
+	var keyPEM: String?
+
+	let status = SecIdentityCopyPrivateKey(identity, &keyRef)
+	if status == errSecSuccess, let keyRef {
+		if let keyData = SecKeyCopyExternalRepresentation(keyRef, nil) as CFData? {
+			certPEM = keyDERtoPEM(derData: keyData as Data)
+		}
+	}
+
 	return (keyPEM, certPEM)
+}
+
+func getPEMsFromIdentities(identities: [SecIdentity]) -> ([String], [String]){
+	var keyPEMs: [String] = []
+	var certPEMs: [String] = []
+	identities.forEach { identity in
+		let (keyPEM, certPEM) = getPEMFromIdentity(identity)
+		if let keyPEM, let certPEM {
+			keyPEMs.append(keyPEM)
+			certPEMs.append(certPEM)
+		}
+	}
+	return (keyPEMs, certPEMs)
 }
 
 func getItemsInAccessGroup(accessGroup: String) -> [Dictionary<String, Any>] {
