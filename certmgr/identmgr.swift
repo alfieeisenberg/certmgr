@@ -69,10 +69,125 @@ func getAllSecIdentitiesFromKeychain() -> [SecIdentity] {
 
 }
 
-func getAllKeysFromKeychain() -> [NSDictionary] {
+func findKeychainItemsData(ksecClass: String, label: String?) -> NSArray {
+	var query: [String: Any] = [
+		kSecClass as String: ksecClass,
+		kSecReturnData as String: true,
+		kSecMatchLimit as String: kSecMatchLimitAll
+	]
+
+	if let label {
+		query[kSecAttrLabel as String] = label
+	}
 	
-	return []
+	var result: AnyObject?
+	let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+	if let dictionary = result as? NSDictionary {
+		// Handle dictionary
+		print("Dictionary")
+	} else if let array = result as? NSArray {
+		// Handle array
+		print("NSArray")
+	} else {
+		print("Other")
+		// Handle other possibilities
+	}
+	
+	guard let array = result as? NSArray  else {
+		// Handle array
+		print("Error fetching keychain items, Not NSArray")
+		return []
+	}
+
+	return array
 }
+
+
+func findKeychainItemsAttributes(ksecClass: String, labelMatch: String?, exact: Bool) -> [NSDictionary] {
+	var query: [String: Any] = [
+		kSecClass as String: ksecClass,
+		kSecReturnAttributes as String: true,
+		kSecMatchLimit as String: kSecMatchLimitAll
+	]
+
+	if exact, let labelMatch {
+		query[kSecAttrLabel as String] = labelMatch
+	}
+
+	var result: AnyObject?
+	let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+	if let dictionary = result as? NSDictionary {
+		// Handle dictionary
+		print("Dictionary")
+	} else if let array = result as? NSArray {
+		// Handle array
+		print("NSArray")
+	} else {
+		print("Other")
+		// Handle other possibilities
+	}
+	
+	guard let nsArray = result as? NSArray  else {
+		// Handle array
+		print("Error fetching keychain items, Not NSArray")
+		return []
+	}
+
+	// Convert NSArray to Swift array of [String: Any]
+	guard let swiftArray = nsArray as? [NSDictionary] else {
+		print("Conversion failed")
+		return []
+	}
+	
+	if !exact, let labelMatch {
+		let filteredItems = swiftArray.filter { item in
+			guard /*let itemDict = item,*/
+				  let label = item[kSecAttrLabel as String] as? String else {
+				return false
+			}
+			return label.contains(labelMatch)
+		}
+		return filteredItems
+	}
+	
+	return swiftArray
+}
+
+
+func getAllKeyAttributesFromKeychain() -> NSArray {
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassKey,
+//		kSecAttrLabel as String: "Invisinet Identity: 7C2869DF",
+		kSecReturnAttributes as String: true,
+//		kSecReturnData as String: true,
+		kSecMatchLimit as String: kSecMatchLimitAll
+	]
+
+	var result: AnyObject?
+	let status = SecItemCopyMatching(query as CFDictionary, &result)
+
+	if let dictionary = result as? NSDictionary {
+		// Handle dictionary
+		print("Dictionary")
+	} else if let array = result as? NSArray {
+		// Handle array
+		print("NSArray")
+	} else {
+		print("Other")
+		// Handle other possibilities
+	}
+	
+	guard let array = result as? NSArray  else {
+		// Handle array
+		print("Error fetching identities, Not NSArray")
+		return []
+	}
+
+	return array
+}
+
 func getAllCertsFromKeychain() -> [NSDictionary] {
 	
 	return []

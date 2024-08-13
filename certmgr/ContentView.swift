@@ -45,25 +45,10 @@ struct ContentView: View {
             newItem.timestamp = Date()
 
 			do {
-				let identities = getAllSecIdentitiesFromKeychain()
-				let (keys, certs) = separateSecKeysAndSecCertificates(from: identities)
-//				var secCert: SecCertificate?
-//				var secKey: SecKey?
-//				var secIdentity: SecIdentity?
-//				var osStatus: OSStatus?
-////				getItemsInAccessGroup(accessGroup: "Invisinet.certmgr.keychainaccessgroup")
-//				deleteKey()
-//				deleteKey()
-//				(secCert, secKey, secIdentity, osStatus) = createIdentity(certificatePEM: pemCertificate, privateKeyPEM: pemKey, tag: "MyIdentity")
-//				deleteKey()
-//				findIdentity(forKeyTag: "MyIdentity")
-//				deleteIdentity(forKeyTag: "MyIdentity")
-//				findCert()
-//				deleteCert()
-//				findKey()
-//				addSecKeyToKeychain(secKey: secKey!)
-//				addKey()
-//				addCert()
+				let keyAttrs = findKeychainItemsAttributes(ksecClass: kSecClassKey as String, labelMatch: nil, exact: false)
+				let certAttrs = findKeychainItemsAttributes(ksecClass: kSecClassCertificate as String, labelMatch: nil, exact: false)
+				let keyAttrsFiltered = findKeychainItemsAttributes(ksecClass: kSecClassKey as String, labelMatch: "Invisinet", exact: false)
+				let certAttrsFiltered = findKeychainItemsAttributes(ksecClass: kSecClassCertificate as String, labelMatch: "invisinet", exact: false)
 
                 try viewContext.save()
             } catch {
