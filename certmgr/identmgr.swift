@@ -6,6 +6,148 @@ import OpenSSL
 func dumpCert(cert: OpaquePointer) {
 	X509_print_fp(stderr, cert)
 }
+func deleteKey(_ secKey: SecKey) -> OSStatus? {
+	// Step 1: Extract the key's raw data
+	guard let keyData = SecKeyCopyExternalRepresentation(secKey, nil) as Data? else {
+		print("Failed to extract key data.")
+		return nil
+	}
+	
+	// Step 2: Construct a query to find the key in the keychain
+	let searchQuery: [String: Any] = [
+		kSecClass as String: kSecClassKey,
+		kSecValueData as String: keyData,
+		kSecReturnAttributes as String: true,
+		kSecMatchLimit as String: kSecMatchLimitOne
+	]
+	
+	var item: CFTypeRef?
+	let searchStatus = SecItemCopyMatching(searchQuery as CFDictionary, &item)
+	
+	if searchStatus == errSecSuccess, let foundItem = item as? [String: Any] {
+		// Step 3: Delete the keychain item using the found attributes
+		let deleteQuery: [String: Any] = foundItem
+		let deleteStatus = SecItemDelete(deleteQuery as CFDictionary)
+		
+		if deleteStatus == errSecSuccess {
+			print("Key successfully deleted.")
+		} else {
+			print("Failed to delete key with status: \(deleteStatus)")
+		}
+		return deleteStatus
+	} else {
+		print("Failed to find key in keychain.")
+		return searchStatus
+	}
+}
+
+func findCertificateBySerialNumber(serialNumber: Data) -> SecCertificate? {
+	// Create a query dictionary
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassCertificate,
+		kSecAttrSerialNumber as String: serialNumber,
+		kSecReturnRef as String: kCFBooleanTrue!,
+		kSecMatchLimit as String: kSecMatchLimitOne
+	]
+
+	var item: CFTypeRef?
+	let status = SecItemCopyMatching(query as CFDictionary, &item)
+
+	if status == errSecSuccess {
+		return (item as! SecCertificate)
+	} else {
+		print("Certificate not found. Status code: \(status)")
+		return nil
+	}
+}
+func deleteCertificateBySerialNumber(serialNumber: Data) -> OSStatus? {
+	// Create a query dictionary
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassCertificate,
+		kSecAttrSerialNumber as String: serialNumber,
+		kSecMatchLimit as String: kSecMatchLimitOne
+	]
+	
+	let status = SecItemDelete(query as CFDictionary)
+	
+	if status != errSecSuccess {
+		print("Certificate to delete not found. Status code: \(status)")
+	}
+	return status
+}
+
+extension Data {
+	init(hexString: String) {
+		self.init()
+		var hex = hexString
+		while hex.count > 0 {
+			let c: String = String(hex.prefix(2))
+			hex = String(hex.dropFirst(2))
+			var ch: UInt64 = 0
+			Scanner(string: c).scanHexInt64(&ch)
+			var char = UInt8(ch)
+			self.append(&char, count: 1)
+		}
+	}
+}
+
+
+func deleteIdentityBySerialNumber(serialNumber: String) -> OSStatus? {
+	let serialNumberData = Data(hexString: serialNumber)
+
+	print("Deleting Identity with serial number: \(serialNumber)")
+	let status = deleteIdentityBySerialNumber(serialNumber: serialNumberData)
+
+	if status == errSecSuccess {
+		print("Identity deleted")
+	} else {
+		print("Identity deleting failed: \(status!)")
+	}
+	return status
+}
+
+func deleteIdentityBySerialNumber(serialNumber: Data) -> OSStatus? {
+	// Create a query dictionary
+	let query: [String: Any] = [
+		kSecClass as String: kSecClassIdentity,
+		kSecAttrSerialNumber as String: serialNumber,
+		kSecMatchLimit as String: kSecMatchLimitOne
+	]
+	
+	let status = SecItemDelete(query as CFDictionary)
+	
+	if status != errSecSuccess {
+		print("Certificate to delete not found. Status code: \(status)")
+	}
+	return status
+}
+
+func deleteCertificateBySerialNumber(serialNumber: String) -> OSStatus? {
+	let serialNumberData = Data(hexString: serialNumber)
+
+	print("Deleting Identity with serial number: \(serialNumber)")
+	let status = deleteCertificateBySerialNumber(serialNumber: serialNumberData)
+
+	if status == errSecSuccess {
+		print("Identity deleted")
+	} else {
+		print("Identity deleting failed: \(status!)")
+	}
+	return status
+}
+
+
+func findCertificateBySerialNumber(serialNumber: String) -> SecCertificate? {
+	let serialNumberData = Data(hexString: serialNumber)
+	print("Finding Certificate with serial number: \(serialNumber)")
+	if let certificate = findCertificateBySerialNumber(serialNumber: serialNumberData) {
+		print("Certificate found: \(certificate)")
+		return certificate
+	} else {
+		print("Certificate not found")
+		return nil
+	}
+}
 
 func getSecKeyAndSecCertFromIdentity(_ identity: SecIdentity) -> (SecKey?, SecCertificate?) {
 	var key: SecKey?
@@ -81,7 +223,7 @@ func findKeychainItemsData(ksecClass: String, labelMatch: String?, exact: Bool) 
 	]
 
 	if exact, let labelMatch {
-		query[kSecAttrLabel as String] = labelMatch
+		query[kSecAttrApplicationTag as String] = labelMatch
 	}
 	
 	var result: AnyObject?
@@ -133,7 +275,7 @@ func findKeychainItemsAttributes(ksecClass: String, labelMatch: String?, exact: 
 	]
 
 	if exact, let labelMatch {
-		query[kSecAttrLabel as String] = labelMatch
+		query[kSecAttrApplicationTag as String] = labelMatch
 	}
 
 	var result: AnyObject?
@@ -252,6 +394,7 @@ func getPEMFromIdentity(_ identity: SecIdentity) -> (keyPEM: String?, certPEM: S
 	let status = SecIdentityCopyPrivateKey(identity, &keyRef)
 	if status == errSecSuccess, let keyRef {
 		if let keyData = SecKeyCopyExternalRepresentation(keyRef, nil) as CFData? {
+//			if let keyData = SecKeyCopyExternalRepresentation(keyRef, nil) as CFData? {
 			certPEM = keyDERtoPEM(derData: keyData as Data)
 		}
 	}
